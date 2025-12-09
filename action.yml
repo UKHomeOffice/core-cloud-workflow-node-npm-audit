@@ -1,0 +1,43 @@
+name: Node NPM Audit
+
+on:
+  workflow_call:
+    inputs:
+      working_directory:
+        description: "Directory to run NPM Audit in (default: repository root)"
+        required: false
+        type: string
+        default: "."
+
+      node_version:
+        description: "Node version to install (e.g., 24)"
+        required: false
+        type: string
+        default: "24"
+
+      audit_level:
+        description: "The minimum level of vulnerability for npm audit to exit with a non-zero exit code (eg info, low, moderate, high, critical, or none)"
+        required: false
+        type: string
+        default: "low"
+
+jobs:
+  npm_audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ inputs.node_version }}
+
+      - name: Install Node Dependencies
+        working-directory: ${{ inputs.working_directory }}
+        run: npm ci
+
+      - name: Run NPM Audit
+        working-directory: ${{ inputs.working_directory }}
+        run: npm audit --audit-level ${{ inputs.audit_level }}
