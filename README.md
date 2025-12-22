@@ -1,4 +1,4 @@
-# Core Cloud Workflow Node NPM Audit
+# Core Cloud Workflow Node npm audit
 
 A GitHub Actions workflow for running npm audit on Node.js projects to identify and report security vulnerabilities in dependencies.
 
