@@ -33,7 +33,48 @@ jobs:
 | `node_version` | Node version | No | `24` |
 | `audit_level` | Node The minimum level of vulnerability for npm audit to exit with a non-zero exit code | No | `low` |
 
+## Outputs
+
+| Output | Description |
+|--------|-------------|
+| `npm_audit_exit_code` | Exit code from npm audit (0 = success) |
+
+## Updated Repository Structure
+```
+core-cloud-workflow-node-npm-audit/
+.github
+├── workflows
+|    └── self-test.yaml
+|
+├── action.yaml
+├── CODEOWNERS
+├── README.md
+└── tests
+    ├── test-audit-invalid/
+    └── test-audit-valid/
+```
+
+### 📘 SonarQube Configuration 
+– `sonar-project.properties`
+
+```
+sonar.exclusions=tests/**
+
+```
+
+This removes all test fixtures and example IaC from SonarQube analysis, ensuring the Quality Gate only evaluates the actual workflow, action code, and scripts.
+
+| Directory           | Purpose                                               | Excluded From SAST? |
+| ------------------- | ----------------------------------------------------- | ------------------- |
+| `tests/**`          | Local npm lint test harness (intentionally invalid code) | ✅ Yes               |
+| `action.yaml`       | Composite action logic                                | ❌ No                |
+
+This setup ensures clean SAST results without blocking PRs due to intentionally invalid IaC.
 
 ## Contributing
 
-Follow core-cloud contribution guidelines when updating this workflow.
+Please read [CONTRIBUTING.md](./CONTRIBUTING.md)
+
+## Security
+
+Please read [SECURITY.md](./SECURITY.md)
