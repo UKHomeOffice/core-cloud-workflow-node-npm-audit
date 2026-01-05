@@ -1,0 +1,43 @@
+name: Self Test - npm audit action
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  test-valid:
+    name: Test - Valid Node npm audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Run npm audit (valid config)
+        uses: ./
+        with:
+          working_directory: "tests/test-audit-valid"
+
+  test-invalid:
+    name: Test - Invalid Node npm audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Run npm audit (invalid config)
+        id: audit
+        uses: ./
+        continue-on-error: true
+        with:
+          working_directory: "tests/test-audit-invalid"
+
+      - name: Assert failure
+        run: |
+          if [ "${{ steps.audit.outputs.npm_audit_exit_code }}" -eq 0 ]; then
+            echo "Expected npm audit to fail but it succeeded."
+            exit 1
+          fi
